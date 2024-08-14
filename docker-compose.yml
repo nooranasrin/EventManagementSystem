@@ -2,18 +2,19 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql:8.0
-    container_name: mysql-db
-    restart: always
+    image: mysql:8.0 # You can choose a different version if needed
+    restart: unless-stopped
+    container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: event_management
-      MYSQL_USER: user
-      MYSQL_PASSWORD: userpassword
+      MYSQL_ROOT_PASSWORD: password # Replace with your actual password
+      MYSQL_DATABASE: event_management # Replace with your desired database name
+    healthcheck:
+      test: '/usr/bin/mysql --user=root --password=$$MYSQL_ROOT_PASSWORD --execute "SHOW DATABASES;"'
+      interval: 2s
+      timeout: 30s
+      retries: 15
     ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+      - 3306:3306 # Maps the container port 3306 to host port 3306
 
 volumes:
   mysql_data:
